@@ -1,0 +1,29 @@
+[
+    {
+        "data_hora": "05/08/2025 21:34:02",
+        "atendente": "U5513059 ERICK",
+        "protocolo_associado": "N/A",
+        "resultado": "RESOLVIDO",
+        "notas": ""
+    },
+    {
+        "data_hora": "05/08/2025 21:34:32",
+        "atendente": "U5513059 ERICK",
+        "protocolo_associado": "A",
+        "resultado": "RESOLVIDO",
+        "notas": "ASDADASDAD"
+    },
+    {
+        "data_hora": "05/08/2025 21:37:47",
+        "atendente": "U5513059 ERICK",
+        "protocolo_associado": "A",
+        "resultado": "NAO_RESOLVIDO",
+        "notas": "a"
+    },
+    {
+        "data_hora": "05/08/2025 21:56:06",
+        "atendente": "a",
+        "protocolo_associado": "N/A",
+        "codigo_finalizacao": "10 - Falta de energia"
+    }
+]
