@@ -2915,16 +2915,16 @@ class AtendimentoApp:
     def criar_form_reclamacao_unificado(self):
         """Cria o formulário unificado para todas as reclamações."""
         # --- a) DESCRIÇÃO DA RECLAMAÇÃO ---
-        self.adicionar_secao("a) Descrição da Reclamação")
+        self.adicionar_secao("Descrição da Reclamação")
         self.desc_reclamacao_text = scrolledtext.ScrolledText(self.scrollable_frame, height=5, font=("Segoe UI", 11))
         self.desc_reclamacao_text.pack(fill="x", padx=5, pady=2)
 
         # --- b) SOLUÇÃO PRETENDIDA ---
-        self.adicionar_secao("b) Solução Pretendida pelo Cliente")
+        self.adicionar_secao("Solução Pretendida pelo Cliente")
         self.adicionar_campo("SOLUCAO_PRETENDIDA")
 
         # --- c) ANÁLISE DO ATENDENTE ---
-        self.adicionar_secao("c) Análise do Atendente")
+        self.adicionar_secao("Análise do Atendente")
         self.analise_atendente_text = scrolledtext.ScrolledText(self.scrollable_frame, height=5, font=("Segoe UI", 11))
         self.analise_atendente_text.pack(fill="x", padx=5, pady=2)
 
@@ -2958,7 +2958,7 @@ class AtendimentoApp:
         self.adicionar_campo("CONTATO_TERCEIRO", parent=self.frame_dados_terceiros)
         
         # --- j) INFORMAÇÕES COMPLEMENTARES ---
-        self.adicionar_secao("j) Informações Complementares")
+        self.adicionar_secao("Informações Complementares")
         self.info_comp_text = scrolledtext.ScrolledText(self.scrollable_frame, height=4, font=("Segoe UI", 11))
         self.info_comp_text.pack(fill="x", padx=5, pady=2)
 
@@ -2969,40 +2969,40 @@ class AtendimentoApp:
 
         # a) Descrição
         desc = self.desc_reclamacao_text.get("1.0", tk.END).strip()
-        texto += f"a) DESCRIÇÃO DA RECLAMAÇÃO: {desc}\n"
+        texto += f"DESCRIÇÃO DA RECLAMAÇÃO: {desc}\n"
 
         # b) Solução
         solucao = self._get_entry_value("SOLUCAO_PRETENDIDA")
-        texto += f"b) SOLUÇÃO PRETENDIDA: {solucao}\n"
+        texto += f"SOLUÇÃO PRETENDIDA: {solucao}\n"
 
         # c) Análise
         analise = self.analise_atendente_text.get("1.0", tk.END).strip()
-        texto += f"c) ANÁLISE DO ATENDENTE: {analise}\n"
+        texto += f"ANÁLISE DO ATENDENTE: {analise}\n"
 
         # d) Meio de Resposta
         meio_resp = self.radio_vars.get("MEIO DE RESPOSTA", tk.StringVar()).get() or "NÃO SELECIONADO"
         contato_resp = self._get_entry_value("CONTATO_PARA_RESPOSTA")
-        texto += f"d) MEIO DE RESPOSTA DA RECLAMAÇÃO: {meio_resp} - Contato: {contato_resp}\n"
+        texto += f"MEIO DE RESPOSTA DA RECLAMAÇÃO: {meio_resp} - Contato: {contato_resp}\n"
         
         # e) WhatsApp
         aceita_wpp = self.radio_vars.get("ACEITA RESPOSTA/FATURA VIA WHATSAPP", tk.StringVar()).get() or "NÃO SELECIONADO"
-        texto += f"e) ACEITA RECEBER RESPOSTA / FATURA VIA WHATSAPP: {aceita_wpp}\n"
+        texto += f"ACEITA RECEBER RESPOSTA / FATURA VIA WHATSAPP: {aceita_wpp}\n"
 
         # f) Telefone
         tel_contato = self._get_entry_value("TELEFONE_CONTATO")
-        texto += f"f) TELEFONE PARA CONTATO: {tel_contato}\n"
+        texto += f"TELEFONE PARA CONTATO: {tel_contato}\n"
 
         # g) Horário
         horario = self.radio_vars.get("MELHOR HORÁRIO PARA CONTATO", tk.StringVar()).get() or "NÃO SELECIONADO"
-        texto += f"g) MELHOR HORÁRIO PARA CONTATO: {horario}\n"
+        texto += f"MELHOR HORÁRIO PARA CONTATO: {horario}\n"
         
         # h) E-mail
         email = self._get_entry_value("EMAIL_CONTATO") or "não informado"
-        texto += f"h) E-MAIL: {email}\n"
+        texto += f"E-MAIL: {email}\n"
 
         # i) Terceiros
         autoriza = self.radio_vars.get("AUTORIZA TERCEIROS A RECEBER A RESPOSTA", tk.StringVar()).get() or "NÃO"
-        texto += f"i) AUTORIZA TERCEIROS: {autoriza}\n"
+        texto += f"AUTORIZA TERCEIROS: {autoriza}\n"
         if autoriza == "SIM":
             nome_vinc = self._get_entry_value("NOME_E_VINCULO_TERCEIRO")
             cont_terc = self._get_entry_value("CONTATO_TERCEIRO")
@@ -3011,7 +3011,7 @@ class AtendimentoApp:
 
         # j) Informações Complementares
         info_comp = self.info_comp_text.get("1.0", tk.END).strip()
-        texto += f"j) INFORMAÇÕES COMPLEMENTARES: {info_comp}\n"
+        texto += f"INFORMAÇÕES COMPLEMENTARES: {info_comp}\n"
 
         return texto
 

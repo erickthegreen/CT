@@ -2,5 +2,14 @@
     "Emergenciais": [],
     "Comerciais": [],
     "Informação": [],
-    "Reclamações": []
+    "Reclamações": [
+        {
+            "data": "06/08/2025 21:48",
+            "servico": "Reclamações",
+            "nome": "a",
+            "protocolo": "a",
+            "atendente": "a",
+            "texto_completo": "SERVIÇO: Reclamações\nNOME: a\nTELEFONE: a\nCC/CPF/CNPJ/UC: a\nPROTOCOLO: a\n\na) DESCRIÇÃO DA RECLAMAÇÃO: a\nb) SOLUÇÃO PRETENDIDA: a\nc) ANÁLISE DO ATENDENTE: a\nd) MEIO DE RESPOSTA DA RECLAMAÇÃO: TELEFONE - Contato: a\ne) ACEITA RECEBER RESPOSTA / FATURA VIA WHATSAPP: SIM\nf) TELEFONE PARA CONTATO: a\ng) MELHOR HORÁRIO PARA CONTATO: MANHA\nh) E-MAIL: a\ni) AUTORIZA TERCEIROS: SIM\n   - NOME E VÍNCULO: a\n   - CONTATO: a\nj) INFORMAÇÕES COMPLEMENTARES: a\n\na"
+        }
+    ]
 }
