@@ -358,7 +358,7 @@ class PausaInteligente:
 class AtendimentoApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🛠️ CRAFT TABLE v3 🛠️ - A sua bancada de trabalho interativo e funcional")
+        self.root.title("🛠️ CRAFT TABLE v3.31 🛠️ - A sua bancada de trabalho interativo e funcional")
         self.root.geometry("880x700")
         self.root.resizable(True, True)
         if getattr(sys, 'frozen', False):
