@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['Craft Table v3.3.py'],
+    ['Craft Table v3.31.py'],
     pathex=[],
     binaries=[],
     datas=[('historico_registros.json', '.'), ('config_tema.json', '.'), ('tabulacoes.json', '.')],
