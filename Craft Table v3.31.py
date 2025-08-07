@@ -2969,7 +2969,7 @@ class AtendimentoApp:
         self.adicionar_campo("CONTATO_TERCEIRO", parent=self.frame_dados_terceiros)
         
         # --- j) INFORMAÇÕES COMPLEMENTARES ---
-        self.adicionar_secao("j) Informações Complementares")
+        self.adicionar_secao("Informações Complementares")
         self.info_comp_text = scrolledtext.ScrolledText(self.scrollable_frame, height=4, font=("Segoe UI", 11))
         # Aplica as cores do tema escuro
         self.info_comp_text.configure(bg=bg_text, fg=fg_text, insertbackground=insert_color)
