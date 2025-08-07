@@ -372,9 +372,9 @@ class AtendimentoApp:
 
         # A linha que calcula o self.base_path foi REMOVIDA DAQUI, pois a movemos para cima.
 
-        self.pasta_anexos = os.path.join(self.base_path, "anexos")
-        if not os.path.exists(self.pasta_anexos):
-            os.makedirs(self.pasta_anexos)
+        #self.pasta_anexos = os.path.join(self.base_path, "anexos")
+        #if not os.path.exists(self.pasta_anexos):
+        #    os.makedirs(self.pasta_anexos)
 
         # Inicialização de variáveis de estado
         self.tamanho_fonte_base = 10
@@ -1644,8 +1644,8 @@ class AtendimentoApp:
         self.adicionar_campo("OBSERVAÇÃO DA OCORRÊNCIA")
         
     def criar_form_servico_2(self):
-        self.criar_form_reclamacao_geral()
-
+        self.criar_form_reclamacao_unificado()
+    
     def criar_form_servico_3(self):
         self.criar_form_gravacao_telefonica()
         
@@ -2472,18 +2472,19 @@ class AtendimentoApp:
         entry.pack(side="left", fill="x", expand=True)
         self.entries[nome_campo] = entry
 
-    def adicionar_radio_buttons(self, nome_grupo, opcoes, parent=None, command=None):
+    def adicionar_radio_buttons(self, nome_grupo, opcoes, parent=None, command=None, var=None):
         if parent is None:
             parent = self.scrollable_frame
         group_frame = ttk.Frame(parent)
         group_frame.pack(fill="x", pady=2, padx=5)
         ttk.Label(group_frame, text=f"{nome_grupo.replace('RECL_', '').replace('_', ' ').upper()}:", style="Bold.TLabel", anchor="w", width=35).pack(side="left")
-        
-        var = tk.StringVar(value=None)
-        self.radio_vars[nome_grupo] = var
+
+        # Usa a variável passada como argumento ou cria uma nova
+        variable = var if var is not None else tk.StringVar(value=None)
+        self.radio_vars[nome_grupo] = variable
 
         for texto, valor in opcoes:
-            rb = ttk.Radiobutton(group_frame, text=texto, variable=var, value=valor, command=command)
+            rb = ttk.Radiobutton(group_frame, text=texto, variable=variable, value=valor, command=command)
             rb.pack(side="left", padx=10, pady=2)
 
     def adicionar_controle_equipamentos(self):
@@ -2580,24 +2581,7 @@ class AtendimentoApp:
         return texto
 
     def processar_servico_2(self, servico_id):
-        texto = self.get_dados_basicos()
-        tipo_reclamacao = self.combo_reclamacao.get()
-        texto += f"\nTIPO DE RECLAMAÇÃO: {tipo_reclamacao}\n\n"
-
-        campos_reclamacao = [k for k in self.entries if k.startswith("RECL_")]
-        for key in campos_reclamacao:
-            label = key.replace('RECL_', '').replace('_', ' ').upper()
-            valor = self._get_entry_value(key)
-            texto += f"{label}: {valor}\n"
-        
-        radios_reclamacao = [k for k in self.radio_vars if k.startswith("RECL_")]
-        for key in radios_reclamacao:
-            label = key.replace('RECL_', '').replace('_', ' ').upper()
-            var = self.radio_vars[key]
-            valor = var.get()
-            if valor:
-                texto += f"{label}: {valor}\n"
-        return texto
+        return self.processar_reclamacao_unificada()
 
     def processar_servico_3(self, servico_id):
         texto = self.get_dados_basicos()
@@ -3018,6 +3002,116 @@ class AtendimentoApp:
             self.tree_tabulacao.selection_remove(self.tree_tabulacao.selection()[0])
         self.entry_busca_tabulacao.delete(0, "end")
         self.popular_arvore_tabulacao() # Repopula a árvore com todos os itens
+        
+    def _toggle_campos_terceiros(self):
+        """Mostra ou esconde os campos de dados de terceiros baseado na seleção do RadioButton."""
+        if self.autoriza_terceiros_var.get() == "SIM":
+            self.frame_dados_terceiros.pack(fill="x", padx=5, pady=5)
+        else:
+            self.frame_dados_terceiros.pack_forget()
+
+    def criar_form_reclamacao_unificado(self):
+        """Cria o formulário unificado para todas as reclamações."""
+        # --- a) DESCRIÇÃO DA RECLAMAÇÃO ---
+        self.adicionar_secao("a) Descrição da Reclamação")
+        self.desc_reclamacao_text = scrolledtext.ScrolledText(self.scrollable_frame, height=5, font=("Segoe UI", 11))
+        self.desc_reclamacao_text.pack(fill="x", padx=5, pady=2)
+
+        # --- b) SOLUÇÃO PRETENDIDA ---
+        self.adicionar_secao("b) Solução Pretendida pelo Cliente")
+        self.adicionar_campo("SOLUCAO_PRETENDIDA")
+
+        # --- c) ANÁLISE DO ATENDENTE ---
+        self.adicionar_secao("c) Análise do Atendente")
+        self.analise_atendente_text = scrolledtext.ScrolledText(self.scrollable_frame, height=5, font=("Segoe UI", 11))
+        self.analise_atendente_text.pack(fill="x", padx=5, pady=2)
+
+        # --- Contato e Permissões ---
+        self.adicionar_secao("Dados de Contato e Permissões")
+        
+        # d) MEIO DE RESPOSTA
+        self.meio_resposta_var = tk.StringVar(value=None)
+        self.adicionar_radio_buttons("MEIO DE RESPOSTA", [("Telefone", "TELEFONE"), ("Carta", "CARTA"), ("E-mail", "EMAIL")], var=self.meio_resposta_var)
+        self.adicionar_campo("CONTATO_PARA_RESPOSTA")
+
+        # e) ACEITA WHATSAPP
+        self.adicionar_radio_buttons("ACEITA RESPOSTA/FATURA VIA WHATSAPP", [("Sim", "SIM"), ("Não", "NAO")])
+
+        # f) TELEFONE PARA CONTATO
+        self.adicionar_campo("TELEFONE_CONTATO")
+
+        # g) MELHOR HORÁRIO
+        self.adicionar_radio_buttons("MELHOR HORÁRIO PARA CONTATO", [("Manhã", "MANHA"), ("Tarde", "TARDE")])
+
+        # h) E-MAIL
+        self.adicionar_campo("EMAIL_CONTATO")
+
+        # i) AUTORIZA TERCEIROS (com campos dinâmicos)
+        self.autoriza_terceiros_var = tk.StringVar(value="NÃO")
+        self.adicionar_radio_buttons("AUTORIZA TERCEIROS A RECEBER A RESPOSTA", [("Sim", "SIM"), ("Não", "NAO")], var=self.autoriza_terceiros_var, command=self._toggle_campos_terceiros)
+
+        # Frame que aparece/desaparece
+        self.frame_dados_terceiros = ttk.Frame(self.scrollable_frame)
+        self.adicionar_campo("NOME_E_VINCULO_TERCEIRO", parent=self.frame_dados_terceiros)
+        self.adicionar_campo("CONTATO_TERCEIRO", parent=self.frame_dados_terceiros)
+        
+        # --- j) INFORMAÇÕES COMPLEMENTARES ---
+        self.adicionar_secao("j) Informações Complementares")
+        self.info_comp_text = scrolledtext.ScrolledText(self.scrollable_frame, height=4, font=("Segoe UI", 11))
+        self.info_comp_text.pack(fill="x", padx=5, pady=2)
+
+    def processar_reclamacao_unificada(self):
+        """Coleta os dados do formulário unificado e formata o texto final."""
+        texto = self.get_dados_basicos()
+        texto += "\n"
+
+        # a) Descrição
+        desc = self.desc_reclamacao_text.get("1.0", tk.END).strip()
+        texto += f"a) DESCRIÇÃO DA RECLAMAÇÃO: {desc}\n"
+
+        # b) Solução
+        solucao = self._get_entry_value("SOLUCAO_PRETENDIDA")
+        texto += f"b) SOLUÇÃO PRETENDIDA: {solucao}\n"
+
+        # c) Análise
+        analise = self.analise_atendente_text.get("1.0", tk.END).strip()
+        texto += f"c) ANÁLISE DO ATENDENTE: {analise}\n"
+
+        # d) Meio de Resposta
+        meio_resp = self.radio_vars.get("MEIO DE RESPOSTA", tk.StringVar()).get() or "NÃO SELECIONADO"
+        contato_resp = self._get_entry_value("CONTATO_PARA_RESPOSTA")
+        texto += f"d) MEIO DE RESPOSTA DA RECLAMAÇÃO: {meio_resp} - Contato: {contato_resp}\n"
+        
+        # e) WhatsApp
+        aceita_wpp = self.radio_vars.get("ACEITA RESPOSTA/FATURA VIA WHATSAPP", tk.StringVar()).get() or "NÃO SELECIONADO"
+        texto += f"e) ACEITA RECEBER RESPOSTA / FATURA VIA WHATSAPP: {aceita_wpp}\n"
+
+        # f) Telefone
+        tel_contato = self._get_entry_value("TELEFONE_CONTATO")
+        texto += f"f) TELEFONE PARA CONTATO: {tel_contato}\n"
+
+        # g) Horário
+        horario = self.radio_vars.get("MELHOR HORÁRIO PARA CONTATO", tk.StringVar()).get() or "NÃO SELECIONADO"
+        texto += f"g) MELHOR HORÁRIO PARA CONTATO: {horario}\n"
+        
+        # h) E-mail
+        email = self._get_entry_value("EMAIL_CONTATO") or "não informado"
+        texto += f"h) E-MAIL: {email}\n"
+
+        # i) Terceiros
+        autoriza = self.radio_vars.get("AUTORIZA TERCEIROS A RECEBER A RESPOSTA", tk.StringVar()).get() or "NÃO"
+        texto += f"i) AUTORIZA TERCEIROS: {autoriza}\n"
+        if autoriza == "SIM":
+            nome_vinc = self._get_entry_value("NOME_E_VINCULO_TERCEIRO")
+            cont_terc = self._get_entry_value("CONTATO_TERCEIRO")
+            texto += f"   - NOME E VÍNCULO: {nome_vinc}\n"
+            texto += f"   - CONTATO: {cont_terc}\n"
+
+        # j) Informações Complementares
+        info_comp = self.info_comp_text.get("1.0", tk.END).strip()
+        texto += f"j) INFORMAÇÕES COMPLEMENTARES: {info_comp}\n"
+
+        return texto
 
 def main():
     try:
